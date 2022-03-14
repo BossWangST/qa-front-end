@@ -16,20 +16,35 @@ export default {
   data() {
     return {
       series: [{
-        name: 'Series 1',
-        data: [80, 50, 30, 40, 100, 20],
+        name: '得分',
+        data: [110 / 160 * 100, 180 / 200 * 100, 104 / 120 * 100, 110 / 120 * 100, 92, 98, 105 / 120 * 100, 92, 90],
       }],
       chartOptions: {
         chart: {
+
+          animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800,
+            animateGradually: {
+              enabled: true,
+              delay: 150
+            },
+            dynamicAnimation: {
+              enabled: true,
+              speed: 350
+            }
+          },
           height: 350,
           type: 'radar',
         },
         title: {
-          text: 'Basic Radar Chart'
+          text: '成绩分析'
         },
         xaxis: {
-          categories: ['January', 'February', 'March', 'April', 'May', 'June']
-        }
+          categories: ['语文', '数学', '英语', '物理', '历史', '生物', '化学', '政治', '地理']
+        },
+
       }
     }
   }

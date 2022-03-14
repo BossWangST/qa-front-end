@@ -44,9 +44,12 @@
         <a-layout-header style="background: #fff; padding: 0"/>
         <a-layout-content style="margin: 0 16px">
           <a-breadcrumb style="margin: 16px 0">
-            <a-breadcrumb-item>User</a-breadcrumb-item>
-            <a-breadcrumb-item>Bill</a-breadcrumb-item>
+            <a-breadcrumb-item>主页</a-breadcrumb-item>
+            <a-breadcrumb-item>个人信息</a-breadcrumb-item>
           </a-breadcrumb>
+          <div id="chart">
+            <apexchart type="radar" height="350" :options="chartOptions" :series="series"></apexchart>
+          </div>
           <div :style="{ padding: '24px', background: '#fff', minHeight: '360px' }">
             Bill is a cat.
           </div>
@@ -61,6 +64,7 @@
 <script>
 import {PieChartOutlined, DesktopOutlined, UserOutlined, FileOutlined} from '@ant-design/icons-vue';
 import {defineComponent, ref} from 'vue';
+import apexchart from "@/components/radar-chart"
 
 export default defineComponent({
   components: {
@@ -68,6 +72,7 @@ export default defineComponent({
     DesktopOutlined,
     UserOutlined,
     FileOutlined,
+    apexchart,
   },
 
   data() {
