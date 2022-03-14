@@ -14,7 +14,7 @@
           </a-avatar>
         </div>
         <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
-          <a-menu-item key="1">
+          <a-menu-item key="1" @click="show_score()">
             <pie-chart-outlined/>
             <span>成绩分析</span>
           </a-menu-item>
@@ -47,9 +47,11 @@
             <a-breadcrumb-item>主页</a-breadcrumb-item>
             <a-breadcrumb-item>个人信息</a-breadcrumb-item>
           </a-breadcrumb>
-          <div id="chart">
-            <apexchart type="radar" height="350" :options="chartOptions" :series="series"></apexchart>
-          </div>
+          <transition name="fade">
+            <div id="chart" v-if="score_chart">
+              <apexchart type="radar" height="350" :options="chartOptions" :series="series"></apexchart>
+            </div>
+          </transition>
           <div :style="{ padding: '24px', background: '#fff', minHeight: '360px' }">
             Bill is a cat.
           </div>
@@ -77,14 +79,28 @@ export default defineComponent({
 
   data() {
     return {
+      score_chart: true,
       collapsed: ref(false),
       selectedKeys: ref(['1']),
     };
   },
-
+  methods: {
+    show_score() {
+      this.score_chart = !this.score_chart
+    }
+  }
 });
 </script>
 <style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 .avatar {
   margin-bottom: 0;
   font-size: 12px;
