@@ -11,23 +11,14 @@
         <a-menu-item key="1">题库</a-menu-item>
       </a-menu>
     </a-layout-header>
-    <a-layout-content style="background-color: #fff">
-      <a-menu
-        theme="dark"
-        mode="horizontal"
-        style="justify-content: center"
-        v-model:selectedKeys="selectedSubjects"
-      >
-        <a-menu-item
-          v-for="(subject, index) in menuState.subjects"
-          :key="index"
-        >
-          <subject-with-badage
-            :count="menuState.counts[index]"
-            :subject="subject"
-          />
-        </a-menu-item>
-      </a-menu>
+    <a-layout-content style="background-color: #f2f6fc">
+      <div class="main-content-container">
+        <search-question-box :subject="selectedSubject" />
+        <subject-menu
+          v-model:selected="selectedSubject"
+          @indexChanged="indexChanged"
+        />
+      </div>
     </a-layout-content>
     <a-layout-footer style="text-align: center">
       搞个大新闻™ 2022 Q&A
@@ -36,44 +27,41 @@
 </template>
 
 <script>
-import { ref, reactive } from "vue";
+import { ref } from "vue";
 import MainLogo from "@/components/MainLogo.vue";
-import SubjectWithBadage from "@/components/SubjectWithBadage.vue";
+import SubjectMenu from "@/components/SubjectMenu.vue";
+import SearchQuestionBox from "@/components/SearchQuestionBox.vue";
 
 export default {
   name: "QuestionBrowseView",
   components: {
     MainLogo,
-    SubjectWithBadage,
+    SubjectMenu,
+    SearchQuestionBox,
+  },
+  methods: {
+    indexChanged() {
+      // ajax here or update the index
+    },
   },
   setup() {
     const selectedKeys = ref(["1"]);
 
-    const selectedSubjects = ref([0]);
-    const menuState = reactive({
-      subjects: [
-        "语文",
-        "数学",
-        "英语",
-        "物理",
-        "历史",
-        "生物",
-        "化学",
-        "政治",
-        "地理",
-      ],
-      counts: [100, 2000, 3, 4, 5, 6, 7, 8, 9],
-    });
+    const selectedSubject = ref(0);
 
     return {
       selectedKeys,
 
-      menuState,
-      selectedSubjects,
+      selectedSubject,
     };
   },
 };
 </script>
 
-<style>
+<style scoped>
+.main-content-container {
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-top: 3vh;
+}
 </style>
