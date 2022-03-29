@@ -1,7 +1,7 @@
 <template>
   <a-layout style="min-height: 100vh">
     <a-layout-header>
-      <main-logo />
+      <main-logo/>
       <a-button ghost style="margin-left: 30px">返回首页</a-button>
     </a-layout-header>
 
@@ -10,23 +10,23 @@
         <div class="avatar">
           <a-avatar :size="64">
             <template #icon>
-              <UserOutlined />
+              <UserOutlined/>
             </template>
           </a-avatar>
         </div>
         <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
-          <a-menu-item key="1" @click="show_score()">
-            <pie-chart-outlined />
+          <a-menu-item key="1" @click="currentTab='ScoreView'">
+            <pie-chart-outlined/>
             <span>成绩分析</span>
           </a-menu-item>
-          <a-menu-item key="2">
-            <desktop-outlined />
+          <a-menu-item key="2" @click="currentTab='QuestionView'">
+            <desktop-outlined/>
             <span>我的提问</span>
           </a-menu-item>
           <a-sub-menu key="sub1">
             <template #title>
               <span>
-                <user-outlined />
+                <user-outlined/>
                 <span>个人信息设置</span>
               </span>
             </template>
@@ -35,7 +35,7 @@
             <a-menu-item key="5">Alex</a-menu-item>
           </a-sub-menu>
           <a-menu-item key="9">
-            <file-outlined />
+            <file-outlined/>
             <span>File</span>
           </a-menu-item>
         </a-menu>
@@ -49,17 +49,10 @@
             </a-breadcrumb-item>
             <a-breadcrumb-item>个人信息</a-breadcrumb-item>
           </a-breadcrumb>
-          <div
-            :style="{ padding: '24px', background: '#fff', minHeight: '360px' }"
-          >
-            <transition name="fade">
-              <div id="chart" v-if="score_chart">
-                <radar-chart>
-                  type="radar" height="350" :options="chartOptions"
-                  :series="series" >
-                </radar-chart>
-              </div>
-            </transition>
+          <div class="ViewTab">
+            <keep-alive>
+              <ScoreView v-if="selectedComponent=='tab-scoreview'"></ScoreView>
+            </keep-alive>
           </div>
         </a-layout-content>
         <a-layout-footer style="text-align: center">
@@ -76,9 +69,9 @@ import {
   UserOutlined,
   FileOutlined,
 } from "@ant-design/icons-vue";
-import { defineComponent, ref } from "vue";
-import RadarChart from "@/components/RadarChart.vue";
+import {defineComponent, ref} from "vue";
 import MainLogo from "@/components/MainLogo.vue";
+import ScoreView from "@/components/ScoreView.vue";
 
 export default defineComponent({
   name: "PersonalHome",
@@ -87,22 +80,23 @@ export default defineComponent({
     DesktopOutlined,
     UserOutlined,
     FileOutlined,
-    RadarChart,
     MainLogo,
+    ScoreView,
   },
 
   data() {
     return {
-      score_chart: true,
+      currentTab: "ScoreView",
       collapsed: ref(false),
       selectedKeys: ref(["1"]),
     };
   },
-  methods: {
-    show_score() {
-      this.score_chart = !this.score_chart;
-    },
-  },
+  methods: {},
+  computed: {
+    selectedComponent() {
+      return 'tab-' + this.currentTab.toLowerCase()
+    }
+  }
 });
 </script>
 <style>
@@ -115,6 +109,7 @@ export default defineComponent({
 .fade-leave-to {
   opacity: 0;
 }
+
 .avatar {
   margin-bottom: 0;
   font-size: 12px;
