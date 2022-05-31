@@ -5,8 +5,13 @@ import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 import VueApexCharts from "vue3-apexcharts";
 
-import router from './router'
+import router from './router';
+
+import axios from 'axios';
 
 const app = createApp(App);
+
+axios.defaults.baseURL = 'http://localhost:8088/api';
+app.config.globalProperties.$http = axios;
 
 app.use(router).use(Antd).use(VueApexCharts).mount('#app');

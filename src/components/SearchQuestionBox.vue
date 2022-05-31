@@ -2,57 +2,36 @@
   <div style="width: 60%; margin-left: 20%; margin-bottom: 10px">
     <a-row :gutter="[16, 16]">
       <a-col :span="16">
-        <a-auto-complete
-          v-model:value="searchContent"
-          :dropdown-match-select-width="252"
-          :options="dataSource"
-          style="width: 100%"
-          @select="onSelect"
-          @search="handleSearch"
-        >
+        <a-auto-complete v-model:value="searchContent" :dropdown-match-select-width="252" :options="dataSource"
+          style="width: 100%" @select="onSelect" @search="handleSearch">
           <template #option="item">
             <div style="display: flex; justify-content: space-between">
               <span>
                 Found {{ item.query }} on
-                <a
-                  :href="`https://s.taobao.com/search?q=${item.query}`"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a :href="`https://s.taobao.com/search?q=${item.query}`" target="_blank" rel="noopener noreferrer">
                   {{ item.category }}
                 </a>
               </span>
               <span>{{ item.count }} results</span>
             </div>
           </template>
-          <a-input-search
-            size="large"
-            placeholder="在当前分类下搜索"
-            enter-button
-          ></a-input-search>
+          <a-input-search size="large" placeholder="在当前分类下搜索" enter-button></a-input-search>
         </a-auto-complete>
       </a-col>
       <a-col :span="8">
-        <a-select
-          v-model:value="subSubjectsValue"
-          size="large"
-          mode="multiple"
-          style="width: 100%"
-          placeholder="高级搜索选项：选取子分区…"
-          max-tag-count="responsive"
-          :options="subSubjectOptions"
-        ></a-select>
+        <a-select v-model:value="subSubjectsValue" size="large" mode="multiple" style="width: 100%"
+          placeholder="高级搜索选项：选取子分区…" max-tag-count="responsive" :options="subSubjectOptions"></a-select>
       </a-col>
     </a-row>
   </div>
 </template>
 <script>
 import { ref } from "vue";
-//import { concat } from "lodash";
+import { debounce } from "lodash";
 
 export default {
   name: "SearchQuestionBox",
-  props: ["subject"],
+  props: ["subject", "searched"],
   computed: {
     subSubjectOptions() {
       return this.subSubjects[this.subject];
@@ -63,7 +42,8 @@ export default {
       this.subSubjectsValue = [];
     },
   },
-  setup() {
+  emits: ["update:searched"],
+  setup(props, context) {
     const searchContent = ref("");
     const dataSource = ref([]);
 
@@ -87,9 +67,11 @@ export default {
         }));
     };
 
-    const handleSearch = (val) => {
+    const handleSearch = debounce((val) => {
       dataSource.value = val ? searchResult(val) : [];
-    };
+      console.log(searchContent);
+      context.emit("update:searched", true);
+    }, 400);
 
     const chineseOptions = [
       {

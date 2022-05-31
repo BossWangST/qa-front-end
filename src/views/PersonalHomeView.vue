@@ -1,32 +1,27 @@
 <template>
   <a-layout style="min-height: 100vh">
-    <a-layout-header>
-      <main-logo/>
-      <a-button ghost style="margin-left: 30px">返回首页</a-button>
-    </a-layout-header>
-
     <a-layout>
       <a-layout-sider v-model:collapsed="collapsed" collapsible>
         <div class="avatar">
           <a-avatar :size="64">
             <template #icon>
-              <UserOutlined/>
+              <UserOutlined />
             </template>
           </a-avatar>
         </div>
         <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
-          <a-menu-item key="1" @click="currentTab='ScoreView'">
-            <pie-chart-outlined/>
+          <a-menu-item key="1" @click="currentTab = 'ScoreView'">
+            <pie-chart-outlined />
             <span>成绩分析</span>
           </a-menu-item>
-          <a-menu-item key="2" @click="currentTab='QuestionView'">
-            <desktop-outlined/>
+          <a-menu-item key="2" @click="currentTab = 'QuestionView'">
+            <desktop-outlined />
             <span>我的提问</span>
           </a-menu-item>
           <a-sub-menu key="sub1">
             <template #title>
               <span>
-                <user-outlined/>
+                <user-outlined />
                 <span>个人信息设置</span>
               </span>
             </template>
@@ -35,7 +30,7 @@
             <a-menu-item key="5">Alex</a-menu-item>
           </a-sub-menu>
           <a-menu-item key="9">
-            <file-outlined/>
+            <file-outlined />
             <span>File</span>
           </a-menu-item>
         </a-menu>
@@ -51,7 +46,7 @@
           </a-breadcrumb>
           <div class="ViewTab">
             <keep-alive>
-              <ScoreView v-if="selectedComponent=='tab-scoreview'"></ScoreView>
+              <ScoreView v-if="selectedComponent == 'tab-scoreview'"></ScoreView>
             </keep-alive>
           </div>
         </a-layout-content>
@@ -69,8 +64,7 @@ import {
   UserOutlined,
   FileOutlined,
 } from "@ant-design/icons-vue";
-import {defineComponent, ref} from "vue";
-import MainLogo from "@/components/MainLogo.vue";
+import { defineComponent, ref } from "vue";
 import ScoreView from "@/components/ScoreView.vue";
 
 export default defineComponent({
@@ -80,7 +74,6 @@ export default defineComponent({
     DesktopOutlined,
     UserOutlined,
     FileOutlined,
-    MainLogo,
     ScoreView,
   },
 
