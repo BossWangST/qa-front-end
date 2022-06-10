@@ -63,7 +63,7 @@ export default {
   setup() {
     const current = ref([1]);
 
-    const logined = ref(false);
+    const logined = ref(true);
 
     return {
       current,

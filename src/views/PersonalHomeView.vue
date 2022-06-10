@@ -14,7 +14,7 @@
             <pie-chart-outlined />
             <span>成绩分析</span>
           </a-menu-item>
-          <a-menu-item key="2" @click="currentTab = 'QuestionView'">
+          <a-menu-item key="2" @click="currentTab = 'MyQuestion'">
             <desktop-outlined />
             <span>我的提问</span>
           </a-menu-item>
@@ -45,9 +45,8 @@
             <a-breadcrumb-item>个人信息</a-breadcrumb-item>
           </a-breadcrumb>
           <div class="ViewTab">
-            <keep-alive>
               <ScoreView v-if="selectedComponent == 'tab-scoreview'"></ScoreView>
-            </keep-alive>
+              <MyQuestion v-if="selectedComponent == 'tab-myquestion'"></MyQuestion>
           </div>
         </a-layout-content>
         <a-layout-footer style="text-align: center">
@@ -66,6 +65,7 @@ import {
 } from "@ant-design/icons-vue";
 import { defineComponent, ref } from "vue";
 import ScoreView from "@/components/ScoreView.vue";
+import MyQuestion from "@/components/MyQuestion.vue";
 
 export default defineComponent({
   name: "PersonalHome",
@@ -75,6 +75,7 @@ export default defineComponent({
     UserOutlined,
     FileOutlined,
     ScoreView,
+    MyQuestion
   },
 
   data() {
