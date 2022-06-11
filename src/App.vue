@@ -41,9 +41,11 @@
     <router-view @navChanged="navChanged" />
   </div>
 
-  <a-layout-footer style="text-align: center">
-    搞个大新闻™ 2022 Q&A
-  </a-layout-footer>
+  <div class="footer">
+    <strong>
+      搞个大新闻™ 2022 Q&A
+    </strong>
+  </div>
 </template>
 
 <script>
@@ -72,7 +74,7 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style scoped lang="scss">
 .header {
   height: 64px;
   padding-left: 5%;
@@ -82,5 +84,16 @@ export default {
 
 .content {
   background-color: #F0F2F5;
+  min-height: calc(100vh - 64px - 70px);
+}
+
+.footer {
+  height: 70px;
+  text-align: center;
+  align-items: center;
+
+  strong {
+    line-height: 70px;
+  }
 }
 </style>
