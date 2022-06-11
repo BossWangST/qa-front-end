@@ -18,7 +18,7 @@
             <desktop-outlined/>
             <span>我的提问</span>
           </a-menu-item>
-          <a-menu-item key="sub1">
+          <a-menu-item key="3" @click="currentTab = 'ProfileEdit'">
             <user-outlined/>
             <span>个人信息设置</span>
           </a-menu-item>
@@ -38,6 +38,7 @@
           <div class="ViewTab">
             <ScoreView v-if="selectedComponent == 'tab-scoreview'"></ScoreView>
             <MyQuestion v-if="selectedComponent == 'tab-myquestion'"></MyQuestion>
+            <ProfileEdit v-if="selectedComponent == 'tab-profileedit'"></ProfileEdit>
           </div>
         </a-layout-content>
       </a-layout>
@@ -54,6 +55,7 @@ import {
 import {defineComponent, ref} from "vue";
 import ScoreView from "@/components/ScoreView.vue";
 import MyQuestion from "@/components/MyQuestion.vue";
+import ProfileEdit from "@/components/ProfileEdit";
 
 export default defineComponent({
   name: "PersonalHome",
@@ -63,7 +65,8 @@ export default defineComponent({
     UserOutlined,
     //FileOutlined,
     ScoreView,
-    MyQuestion
+    MyQuestion,
+    ProfileEdit
   },
 
   data() {
