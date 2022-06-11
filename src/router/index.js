@@ -15,7 +15,7 @@ const routes = [
     path: '/QuestionBrowse',
     name: 'QuestionBrowse',
     component: () => import('@/views/QuestionBrowseView.vue'),
-  }
+  },
 ]
 
 const router = createRouter({

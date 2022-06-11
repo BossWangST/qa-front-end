@@ -5,33 +5,22 @@
         <div class="avatar">
           <a-avatar :size="64">
             <template #icon>
-              <UserOutlined />
+              <UserOutlined/>
             </template>
           </a-avatar>
         </div>
         <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
           <a-menu-item key="1" @click="currentTab = 'ScoreView'">
-            <pie-chart-outlined />
+            <pie-chart-outlined/>
             <span>成绩分析</span>
           </a-menu-item>
-          <a-menu-item key="2" @click="currentTab = 'QuestionView'">
-            <desktop-outlined />
+          <a-menu-item key="2" @click="currentTab = 'MyQuestion'">
+            <desktop-outlined/>
             <span>我的提问</span>
           </a-menu-item>
-          <a-sub-menu key="sub1">
-            <template #title>
-              <span>
-                <user-outlined />
-                <span>个人信息设置</span>
-              </span>
-            </template>
-            <a-menu-item key="3">Tom</a-menu-item>
-            <a-menu-item key="4">Bill</a-menu-item>
-            <a-menu-item key="5">Alex</a-menu-item>
-          </a-sub-menu>
-          <a-menu-item key="9">
-            <file-outlined />
-            <span>File</span>
+          <a-menu-item key="sub1">
+            <user-outlined/>
+            <span>个人信息设置</span>
           </a-menu-item>
         </a-menu>
       </a-layout-sider>
@@ -40,19 +29,17 @@
         <a-layout-content style="margin: 0 16px">
           <a-breadcrumb style="margin: 16px 0">
             <a-breadcrumb-item>
-              <a> 首页 </a>
+              <router-link to="/">
+                首页
+              </router-link>
             </a-breadcrumb-item>
             <a-breadcrumb-item>个人信息</a-breadcrumb-item>
           </a-breadcrumb>
           <div class="ViewTab">
-            <keep-alive>
-              <ScoreView v-if="selectedComponent == 'tab-scoreview'"></ScoreView>
-            </keep-alive>
+            <ScoreView v-if="selectedComponent == 'tab-scoreview'"></ScoreView>
+            <MyQuestion v-if="selectedComponent == 'tab-myquestion'"></MyQuestion>
           </div>
         </a-layout-content>
-        <a-layout-footer style="text-align: center">
-          搞个大新闻™ 2022 Q&A
-        </a-layout-footer>
       </a-layout>
     </a-layout>
   </a-layout>
@@ -62,10 +49,11 @@ import {
   PieChartOutlined,
   DesktopOutlined,
   UserOutlined,
-  FileOutlined,
+  //FileOutlined,
 } from "@ant-design/icons-vue";
-import { defineComponent, ref } from "vue";
+import {defineComponent, ref} from "vue";
 import ScoreView from "@/components/ScoreView.vue";
+import MyQuestion from "@/components/MyQuestion.vue";
 
 export default defineComponent({
   name: "PersonalHome",
@@ -73,8 +61,9 @@ export default defineComponent({
     PieChartOutlined,
     DesktopOutlined,
     UserOutlined,
-    FileOutlined,
+    //FileOutlined,
     ScoreView,
+    MyQuestion
   },
 
   data() {
