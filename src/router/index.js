@@ -16,6 +16,20 @@ const routes = [
     name: 'QuestionBrowse',
     component: () => import('@/views/QuestionBrowseView.vue'),
   },
+  {
+    path: '/QuestionDetail/:id',
+    name: 'QuestionDetail',
+    component: () => import('@/views/QuestionDetailView.vue'),
+  },
+  {
+    path: '/NewQuestion',
+    name: 'NewQuestion',
+    component: () => import('@/views/NewQuestionView.vue'),
+  }, {
+    path: '/QuestionSuccess',
+    name: 'QuestionSuccess',
+    component: () => import('@/views/QuestionSuccessView.vue')
+  }
 ]
 
 const router = createRouter({

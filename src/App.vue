@@ -28,7 +28,7 @@
     </a-col>
     <a-col :span="3">
       <div v-if="!logined">
-        <a-button type="primery">登录</a-button>
+        <a-button type="primery" @click="showLogin">登录</a-button>
         <a-button type="primery">注册</a-button>
       </div>
       <div v-else>
@@ -46,10 +46,28 @@
       搞个大新闻™ 2022 Q&A
     </strong>
   </div>
+
+  <a-modal v-model:visible="loginModalVisible" title="登录">
+    <template #footer>
+      <a-button type="default" @click="closeLogin">关闭</a-button>
+      <a-button type="primary" :loading="loginLoading" @click="login">登录</a-button>
+    </template>
+    <a-form :model="loginState" :label-col="{ span: 6 }" :wrapper-col="{ span: 14 }" autocomplete="off">
+      <a-form-item label="用户名" name="username" :rules="[{ required: true, message: '请输入用户名！' }]">
+        <a-input v-model:value="loginState.username" />
+      </a-form-item>
+
+      <a-form-item label="密码" name="password" :rules="[{ required: true, message: '请输入密码！' }]">
+        <a-input-password v-model:value="loginState.password" />
+      </a-form-item>
+    </a-form>
+  </a-modal>
+
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
+import { message } from 'ant-design-vue';
 import UserDropdown from '@/components/UserDropdown.vue';
 
 export default {
@@ -60,16 +78,61 @@ export default {
   methods: {
     navChanged(newVal) {
       this.current[0] = newVal;
+    },
+    showLogin() {
+      this.loginModalVisible = true;
+      this.loginLoading = false;
+    },
+    closeLogin() {
+      this.loginModalVisible = false;
+    },
+    login() {
+      this.loginLoading = true;
+      this.$http.post('/user/login', {
+        password: this.loginState.password,
+        username: this.loginState.username,
+      }).then(response => {
+        this.loginLoading = false;
+        this.loginModalVisible = false;
+        let res = response.data;
+        if (res.code == 200) {
+          if (res.result !== null) {
+            sessionStorage.setItem('user_id', res.result.user_id);
+            sessionStorage.setItem('user_name', res.result.user_name);
+            message.info('登录成功！');
+            this.logined = true;
+          } else {
+            message.error('用户名或密码错误！');
+          }
+        } else {
+          message.error('未知错误！');
+        }
+      }).catch(() => {
+        this.loginLoading = false;
+        this.loginModalVisible = false;
+        message.error('未知错误！');
+      })
     }
   },
   setup() {
     const current = ref([1]);
 
-    const logined = ref(true);
+    const logined = ref(false);
+    const loginLoading = ref(false);
+    const loginModalVisible = ref(false);
+
+    const loginState = reactive({
+      username: "",
+      password: "",
+    })
 
     return {
       current,
       logined,
+      loginLoading,
+      loginModalVisible,
+
+      loginState,
     }
   }
 };

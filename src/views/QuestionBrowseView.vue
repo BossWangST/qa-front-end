@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <floating-circle>
+      <plus-circle-outlined style="font-size: 24px; line-height: 40px;" />
+    </floating-circle>
     <search-question-box :subject="selectedSubject" v-model="searched" />
     <div v-if="searched">
       <a-page-header style="border: 1px solid rgb(235, 237, 240)" title="搜索结果" :sub-title="`当前分类：${selectedSubject}`"
@@ -8,27 +11,39 @@
     <div v-else>
       <subject-menu v-model:selected="selectedSubject" @indexChanged="indexChanged" />
     </div>
+    <div v-if="searched">
+    </div>
+    <div v-else>
+      <question-brief :subject="selectedSubject"></question-brief>
+    </div>
   </div>
 </template>
 
 <script>
 import { ref } from "vue";
+import { PlusCircleOutlined } from "@ant-design/icons-vue";
 import SubjectMenu from "@/components/SubjectMenu.vue";
 import SearchQuestionBox from "@/components/SearchQuestionBox.vue";
+import QuestionBrief from "@/components/QuestionBrief.vue";
+import FloatingCircle from "@/components/FloatingCircle.vue";
 
 export default {
   name: "QuestionBrowseView",
   components: {
+    PlusCircleOutlined,
+
     SubjectMenu,
     SearchQuestionBox,
+    QuestionBrief,
+    FloatingCircle,
   },
   emits: ['navChanged'],
   methods: {
     indexChanged() {
-      // ajax here or update the index
-    },
+
+    }
   },
-  setup(props, context) {
+  setup(_, context) {
     context.emit('navChanged', 2);
     const selectedKeys = ref(["1"]);
 

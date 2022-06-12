@@ -23,7 +23,11 @@
     </a-dropdown-button>
 </template>
 <script>
+import { UserOutlined } from '@ant-design/icons-vue'
 export default {
     name: 'UserDropdown',
+    components: {
+        UserOutlined,
+    }
 }
 </script>
