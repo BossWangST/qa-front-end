@@ -93,7 +93,9 @@ export default defineComponent({
             formData.set('subject', formState.subject);
             formData.set('credit', formState.credit);
             formData.set('user_id', userID);
-            formData.set('img', formState.img[0]);
+            formState.img.forEach(file => {
+                formData.append("img", file.originFileObj);
+            })
 
             $http.put("/question", formData)
                 .then((response) => {

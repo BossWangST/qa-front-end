@@ -6,7 +6,7 @@
                     <question-extra :like-count="item.like_count" :ans-count="item.ans_count"></question-extra>
                 </template>
                 <template #extra>
-                    <img v-if="item.img_src" width="272" :src="item.img_src" />
+                    <a-image v-if="item.img_src" style="width: auto; max-height: 200px;" :src="item.img_src" />
                 </template>
                 <a-list-item-meta :description="item.content">
                     <template #title>
