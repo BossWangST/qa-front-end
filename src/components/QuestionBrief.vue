@@ -65,7 +65,7 @@ export default defineComponent({
         watch(
             () => props.subject,
             (newVal) => {
-                getContent(currentPage, newVal);
+                getContent(currentPage.value, newVal);
             }
         )
 
