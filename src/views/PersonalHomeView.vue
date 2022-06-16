@@ -81,7 +81,7 @@ export default defineComponent({
     selectedComponent() {
       return 'tab-' + this.currentTab.toLowerCase()
     }
-  }
+  },
 });
 </script>
 <style>
