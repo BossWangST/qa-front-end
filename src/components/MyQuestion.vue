@@ -1,25 +1,26 @@
 <template>
   <a-list item-layout="vertical" size="large" :pagination="false" :data-source="listData">
-    <template #renderItem="{question}">
-      <a-card title="question.title" style="width: 700px" key="1">
-        <a-tag color="orange">科目:{{ question.subjectId }}</a-tag>
-        <a-tag color="green">悬赏积分:{{ question.credit }}</a-tag>
-        <a-tag color="purple">提问时间:{{ question.time }}</a-tag>
-        <br/>
-        <br/>
+    <template #renderItem="{ item }">
+      <a-card :title="item.title" style="width: 700px" key="1">
+        <a-tag color="orange">科目:{{ item.subject_name }}</a-tag>
+        <a-tag color="green">悬赏积分:{{ item.credit }}</a-tag>
+        <a-tag color="purple">提问时间:{{ item.time }}</a-tag>
+        <br />
+        <br />
         <template #extra>
-          <a-button type="primary" @click="jumpTo(question.question_id)">详情</a-button>
+          <a-button type="primary" @click="jumpTo(item.question_id)">详情</a-button>
         </template>
         <p>
-          {{ question.content }}
+          {{ item.content }}
         </p>
       </a-card>
-      <br/>
+      <br />
     </template>
   </a-list>
 </template>
 <script>
-import {getCurrentInstance, ref} from "vue";
+import { getCurrentInstance, ref } from "vue";
+import dayjs from "dayjs";
 
 export default {
   name: "MyQuestion",
@@ -28,22 +29,27 @@ export default {
       this.$router.push('/QuestionDetail/' + question_id);
     }
   },
-  props: ['user_id'],
-  setup(props) {
-    const {appContext} = getCurrentInstance();
+  setup() {
+    const { appContext } = getCurrentInstance();
     const $http = appContext.config.globalProperties.$http;
     const listData = ref([]);
-    const getContent = (user_id) => $http.get("/question/user_id",
-        {params: {UserID: user_id}}).then(
-        response => {
-          let res = response.data;
-          if (res.code == 200) {
-            let r = res.result;
-            listData.value = r.questions;
-          }
+
+    const user_id = sessionStorage.getItem('user_id');
+    const getContent = (user_id) => $http.get("/question/" + user_id).then(
+      response => {
+        let res = response.data;
+        if (res.code == 200) {
+          let r = res.result;
+          r.questions.forEach(t => {
+            t.time = dayjs(t.time).format("YYYY-MM-DD HH:mm:ss");
+          });
+          listData.value = r.questions;
+          console.log(listData.value);
         }
+      }
     );
-    getContent(props.user_id);
+    getContent(user_id);
+
     return {
       listData,
       getContent,
@@ -70,5 +76,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

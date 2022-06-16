@@ -5,21 +5,21 @@
         <div class="avatar">
           <a-avatar :size="64">
             <template #icon>
-              <UserOutlined/>
+              <UserOutlined />
             </template>
           </a-avatar>
         </div>
         <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
           <a-menu-item key="1" @click="currentTab = 'ScoreView'">
-            <pie-chart-outlined/>
+            <pie-chart-outlined />
             <span>成绩分析</span>
           </a-menu-item>
           <a-menu-item key="2" @click="currentTab = 'MyQuestion'">
-            <desktop-outlined/>
+            <desktop-outlined />
             <span>我的提问</span>
           </a-menu-item>
           <a-menu-item key="3" @click="currentTab = 'ProfileEdit'">
-            <user-outlined/>
+            <user-outlined />
             <span>个人信息设置</span>
           </a-menu-item>
         </a-menu>
@@ -52,7 +52,7 @@ import {
   UserOutlined,
   //FileOutlined,
 } from "@ant-design/icons-vue";
-import {defineComponent, ref} from "vue";
+import { defineComponent, ref } from "vue";
 import ScoreView from "@/components/ScoreView.vue";
 import MyQuestion from "@/components/MyQuestion.vue";
 import ProfileEdit from "@/components/ProfileEdit";
@@ -68,7 +68,7 @@ export default defineComponent({
     MyQuestion,
     ProfileEdit
   },
-
+  emits: ['navChanged'],
   data() {
     return {
       currentTab: "ScoreView",
@@ -82,6 +82,12 @@ export default defineComponent({
       return 'tab-' + this.currentTab.toLowerCase()
     }
   },
+  setup(_, context) {
+    context.emit('navChanged', 10);
+    return {
+
+    }
+  }
 });
 </script>
 <style>

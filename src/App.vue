@@ -117,9 +117,14 @@ export default {
   setup() {
     const current = ref([1]);
 
+
     const logined = ref(false);
     const loginLoading = ref(false);
     const loginModalVisible = ref(false);
+
+    if (sessionStorage.getItem('user_id')) {
+      logined.value = true;
+    }
 
     const loginState = reactive({
       username: "",
@@ -147,16 +152,16 @@ export default {
 
 .content {
   background-color: #F0F2F5;
-  min-height: calc(100vh - 64px - 70px);
+  min-height: calc(100vh - 64px - 48px);
 }
 
 .footer {
-  height: 70px;
+  height: 48px;
   text-align: center;
   align-items: center;
 
   strong {
-    line-height: 70px;
+    line-height: 48px;
   }
 }
 </style>
