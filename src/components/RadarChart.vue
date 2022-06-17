@@ -11,7 +11,7 @@
 
 <script>
 import VueApexCharts from "vue3-apexcharts";
-import {getCurrentInstance, ref, reactive} from "vue";
+import {getCurrentInstance, ref} from "vue";
 
 export default {
   name: "RadarChart",
@@ -24,16 +24,16 @@ export default {
     const listData = ref([]);
 
     const user_id = sessionStorage.getItem('user_id');
-    const series = reactive({
+    const series = ref([{
       name: "得分",
       data: []
-    })
+    }])
     const getGrade = (user_id) => $http.get("/MyGrade/" + user_id).then(
         response => {
           let res = response.data;
           if (res.code == 200) {
             let r = res.result;
-            series.data = r.map(t => t.value);
+            series.value[0].data = r.map(t => t.value);
             //console.log(r.grade);
           }
         }
@@ -73,6 +73,12 @@ export default {
             "语文",
             "数学",
             "英语",
+            "物理",
+            "历史",
+            "生物",
+            "地理",
+            "政治",
+            "化学"
           ],
         },
       },
