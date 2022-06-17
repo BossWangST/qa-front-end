@@ -33,6 +33,8 @@ export default {
     const { appContext } = getCurrentInstance();
     const $http = appContext.config.globalProperties.$http;
     const listData = ref([]);
+    const utc = require("dayjs/plugin/utc");
+    dayjs.extend(utc);
 
     const user_id = sessionStorage.getItem('user_id');
     const getContent = (user_id) => $http.get("/question/" + user_id).then(
@@ -41,7 +43,7 @@ export default {
         if (res.code == 200) {
           let r = res.result;
           r.questions.forEach(t => {
-            t.time = dayjs(t.time).format("YYYY-MM-DD HH:mm:ss");
+            t.time = dayjs(t.time).utc().format("YYYY-MM-DD HH:mm:ss");
           });
           listData.value = r.questions;
         }

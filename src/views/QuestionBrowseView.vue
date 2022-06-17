@@ -69,6 +69,8 @@ export default {
     context.emit('navChanged', 2);
     const { appContext } = getCurrentInstance();
     const $http = appContext.config.globalProperties.$http;
+    const utc = require('dayjs/plugin/utc');
+    dayjs.extend(utc);
 
     const selectedKeys = ref(["1"]);
     const selectedSubject = ref("全部");
@@ -110,7 +112,7 @@ export default {
 
     const processTime = list => {
       list.forEach(t => {
-        t.time = dayjs(t.time).format("YYYY-MM-DD HH:mm:ss");
+        t.time = dayjs(t.time).utc().format("YYYY-MM-DD HH:mm:ss");
       });
       return list;
     }

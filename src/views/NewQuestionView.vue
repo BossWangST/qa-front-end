@@ -20,6 +20,15 @@
                 </a-select>
             </a-form-item>
 
+            <a-form-item label="相关标签" name="tags" v-if="tagState[formState.subject]">
+                <template v-for="tag in tagState[formState.subject]" :key="tag.value">
+                    <a-checkable-tag :checked="formState.tags.indexOf(tag.value) > -1"
+                        @change="checked => tagChange(tag.value, checked)">
+                        {{ tag.label }}
+                    </a-checkable-tag>
+                </template>
+            </a-form-item>
+
             <a-form-item label="问题标题" name="title" :rules="[{ required: true, message: '请输入问题标题！' }]">
                 <a-input v-model:value="formState.title" show-count :maxlength="50" />
             </a-form-item>
@@ -61,11 +70,18 @@
 </template>
 <script>
 import { InboxOutlined } from '@ant-design/icons-vue';
-import { defineComponent, reactive, getCurrentInstance } from 'vue';
+import { defineComponent, reactive, ref, getCurrentInstance } from 'vue';
 export default defineComponent({
     name: 'NewQuestionView',
     components: {
         InboxOutlined,
+    },
+    methods: {
+        tagChange(tagID, checked) {
+            const { tags } = this.formState;
+            const nextTags = checked ? [...tags, tagID] : tags.filter(t => t != tagID);
+            this.formState.tags = nextTags;
+        }
     },
     setup() {
         const { appContext } = getCurrentInstance();
@@ -77,8 +93,11 @@ export default defineComponent({
             main_content: "",
             subject: "语文",
             img: [],
+            tags: [],
             credit: 0,
         });
+
+        const tagState = ref({})
 
         const beforeUpload = () => {
             return false;
@@ -93,6 +112,7 @@ export default defineComponent({
             formData.set('subject', formState.subject);
             formData.set('credit', formState.credit);
             formData.set('user_id', userID);
+            formData.set('tags', formState.tags);
             formState.img.forEach(file => {
                 formData.append("img", file.originFileObj);
             })
@@ -106,12 +126,18 @@ export default defineComponent({
                 })
         };
 
-
+        $http.get("/tag/").then(response => {
+            let res = response.data;
+            if (res.code === 200) {
+                tagState.value = res.result;
+            }
+        })
 
         return {
             formState,
             beforeUpload,
             onFinish,
+            tagState,
         };
     },
 
