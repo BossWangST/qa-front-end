@@ -4,11 +4,11 @@
             <a-card style="margin-top: 20px">
                 <template #actions>
                     <div @click="like(item.question_id)">
-                        <like-outlined></like-outlined>
+                        <like-outlined />
                         {{ item.like_count }}
                     </div>
                     <div @click="answer(item.question_id)">
-                        <message-outlined></message-outlined>
+                        <message-outlined />
                         {{ item.ans_count }}
                     </div>
                 </template>
@@ -17,6 +17,21 @@
                         <a-typography-title :level="4">
                             <a @click="jumpTo(item.question_id)">{{ item.title }}</a>
                         </a-typography-title>
+                        <span v-if="item.credit !== 0">
+                            <a-tag color="orange">
+                                <template #icon>
+                                    <dollar-circle-outlined />
+                                </template>
+                                悬赏分：{{ item.credit }}
+                            </a-tag>
+                        </span>
+                        <span v-if="item.tags && item.tags.length > 0">
+                            <span v-for="(tag, index) in item.tags" :key="index">
+                                <a-tag color="green">
+                                    {{ tag.subject_name }} : {{ tag.tag_name }}
+                                </a-tag>
+                            </span>
+                        </span>
                     </template>
                     <template #description>
                         <div style="padding-left: 3%; padding-right: 3%;">
@@ -47,13 +62,14 @@
 </template>
 <script>
 import { defineComponent } from 'vue';
-import { LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';
+import { LikeOutlined, MessageOutlined, DollarCircleOutlined } from '@ant-design/icons-vue';
 
 
 export default defineComponent({
     components: {
         LikeOutlined,
         MessageOutlined,
+        DollarCircleOutlined,
     },
     data() {
     },
