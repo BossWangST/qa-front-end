@@ -1,5 +1,5 @@
 <template>
-    <a-list item-layout="vertical" size="large" :pagination="false" :data-source="listData">
+    <a-list item-layout="vertical" size="large" :pagination="false" :data-source="questionList">
         <template #renderItem="{ item }">
             <a-card style="margin-top: 20px">
                 <template #actions>
@@ -44,17 +44,11 @@
             </a-card>
         </template>
     </a-list>
-    <a-row justify="center">
-        <a-col :span="16" style="text-align: center">
-            <a-pagination v-model:current="currentPage" :total="total" :pageSize="20" show-less-items
-                @change="pageChange" />
-        </a-col>
-    </a-row>
 </template>
 <script>
-import { defineComponent, ref, getCurrentInstance, watch } from 'vue';
+import { defineComponent } from 'vue';
 import { LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';
-import dayjs from "dayjs";
+
 
 export default defineComponent({
     components: {
@@ -62,18 +56,12 @@ export default defineComponent({
         MessageOutlined,
     },
     data() {
-        return {
-            current_img: true,
-        }
     },
     methods: {
         jumpTo(question_id) {
             this.$router.push('/QuestionDetail/' + question_id);
         },
-        pageChange(page) {
-            this.current_img = !this.current_img;
-            this.getContent(page.value, this.subject);
-        },
+
         like(question_id) {
             console.log("liked" + question_id);
         },
@@ -81,45 +69,7 @@ export default defineComponent({
             console.log("answer" + question_id);
         }
     },
-    props: ['subject'],
-    setup(props) {
-        const { appContext } = getCurrentInstance();
-        const $http = appContext.config.globalProperties.$http;
-
-        const currentPage = ref(1);
-        const total = ref(0);
-        const listData = ref([]);
-
-        const getContent = (page, subject) => $http.get("/question",
-            { params: { page: page, subject_name: subject } })
-            .then(response => {
-                let res = response.data;
-
-                if (res.code == 200) {
-                    let r = res.result;
-                    total.value = r.total_count;
-                    r.questions.forEach(t => {
-                        t.time = dayjs(t.time).format("YYYY-MM-DD HH:mm:ss");
-                    });
-                    listData.value = r.questions;
-                }
-            });
-
-        getContent(1, props.subject);
-
-        watch(
-            () => props.subject,
-            (newVal) => {
-                getContent(currentPage.value, newVal);
-            }
-        )
-
-        return {
-            listData,
-            currentPage,
-            total,
-            getContent,
-        };
-    },
+    props: ['questionList'],
+    emits: ['pageChange'],
 });
 </script>

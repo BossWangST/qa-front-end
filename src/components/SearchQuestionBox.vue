@@ -3,159 +3,93 @@
     <a-row :gutter="[16, 16]">
       <a-col :span="16">
         <a-auto-complete v-model:value="searchContent" :dropdown-match-select-width="252" :options="dataSource"
-          style="width: 100%" @select="onSelect" @search="handleSearch">
-          <template #option="item">
-            <div style="display: flex; justify-content: space-between">
-              <span>
-                Found {{ item.query }} on
-                <a :href="`https://s.taobao.com/search?q=${item.query}`" target="_blank" rel="noopener noreferrer">
-                  {{ item.category }}
-                </a>
-              </span>
-              <span>{{ item.count }} results</span>
-            </div>
-          </template>
-          <a-input-search size="large" placeholder="在当前分类下搜索" enter-button></a-input-search>
+          style="width: 100%" @select="onSelect" @search="completion" :backfill="true">
+          <a-input-search size="large" placeholder="在当前分类下搜索" enter-button @search="search"></a-input-search>
         </a-auto-complete>
       </a-col>
       <a-col :span="8">
-        <a-select v-model:value="subSubjectsValue" size="large" mode="multiple" style="width: 100%"
-          placeholder="高级搜索选项：选取子分区…" max-tag-count="responsive" :options="subSubjectOptions"></a-select>
+        <a-select v-model:value="tagValue" size="large" mode="multiple" style="width: 100%" placeholder="高级搜索选项：选取子分区…"
+          max-tag-count="responsive" :options="tagOptions"></a-select>
       </a-col>
     </a-row>
   </div>
 </template>
 <script>
-import { ref } from "vue";
+import { ref, getCurrentInstance } from "vue";
 import { debounce } from "lodash";
+import qs from "qs";
 
 export default {
   name: "SearchQuestionBox",
   props: ["subject", "searched"],
   computed: {
-    subSubjectOptions() {
+    tagOptions() {
       return this.subSubjects[this.subject];
     },
   },
   watch: {
     subject() {
-      this.subSubjectsValue = [];
+      this.tagValue = [];
     },
   },
-  emits: ["update:searched"],
-  setup(props, context) {
+  methods: {
+    search() {
+      this.$emit("search", this.searchContent, this.tagValue);
+      this.$emit("update:searched", true);
+    }
+  },
+  emits: ["update:searched", "search"],
+  setup(props) {
+    const { appContext } = getCurrentInstance();
+    const $http = appContext.config.globalProperties.$http;
+
     const searchContent = ref("");
     const dataSource = ref([]);
 
     const onSelect = (value) => {
-      console.log("onSelect", value);
+      if (value.length > 3)
+        complete();
     };
 
-    const getRandomInt = (max, min = 0) => {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-
-    const searchResult = (query) => {
-      return new Array(getRandomInt(5))
-        .join(".")
-        .split(".")
-        .map((_item, idx) => ({
-          query,
-          category: `${query}${idx}`,
-          value: `${query}${idx}`,
-          count: getRandomInt(200, 100),
-        }));
-    };
-
-    const handleSearch = debounce((val) => {
-      dataSource.value = val ? searchResult(val) : [];
-      console.log(searchContent);
-      context.emit("update:searched", true);
-    }, 400);
-
-    const chineseOptions = [
-      {
-        value: "123",
-        label: "123",
+    const complete = () => {
+      $http.get("/question/c", {
+        params: {
+          content: searchContent.value,
+          subjectName: props.subject,
+          tags: tagValue.value.length == 0 ? "" : tagValue.value,
+        },
+        paramsSerializer: params => qs.stringify(params, { arrayFormat: 'comma' })
       },
-      {
-        value: "111",
-        label: "111",
-      },
-    ];
-
-    const mathOptions = [
-      {
-        value: "11111",
-        label: "11111",
-      },
-    ];
-
-    const engilishOptions = [];
-
-    const physicsOptions = [];
-
-    const historyOptions = [];
-
-    const biologyOptions = [];
-
-    const chemicalOptions = [];
-
-    const politicsOptions = [];
-
-    const geographyOptions = [];
-
-    const subSubjects = {
-      全部: [
-        {
-          label: "语文",
-          options: chineseOptions,
-        },
-        {
-          label: "数学",
-          options: mathOptions,
-        },
-        {
-          label: "英语",
-          options: engilishOptions,
-        },
-        {
-          label: "物理",
-          options: physicsOptions,
-        },
-        {
-          label: "历史",
-          options: historyOptions,
-        },
-        {
-          label: "生物",
-          options: biologyOptions,
-        },
-        {
-          label: "化学",
-          options: chemicalOptions,
-        },
-        {
-          label: "政治",
-          options: politicsOptions,
-        },
-        {
-          label: "地理",
-          options: geographyOptions,
-        },
-      ],
-      语文: chineseOptions,
-      数学: mathOptions,
-      英语: engilishOptions,
-      物理: physicsOptions,
-      历史: historyOptions,
-      生物: biologyOptions,
-      化学: chemicalOptions,
-      政治: politicsOptions,
-      地理: geographyOptions,
+      )
+        .then(response => {
+          let res = response.data;
+          if (res.code === 200) {
+            dataSource.value = res.result.map(value => {
+              return { value: value, label: value }
+            });
+          }
+        })
     };
 
-    const subSubjectsValue = ref([]);
+    const completion = debounce((val) => {
+      val && val.length >= 3 ? complete() : [];
+    }, 500);
+
+    $http.get("/tag/").then(response => {
+      let res = response.data;
+      if (res.code === 200) {
+        subSubjects.value = res.result;
+        let all = [];
+        for (const key in res.result) {
+          all.push({ label: key, options: res.result[key] });
+        }
+        subSubjects.value["全部"] = all;
+      }
+    })
+
+    const subSubjects = ref({});
+
+    const tagValue = ref([]);
 
     const subSubjectsOption = ref([]);
 
@@ -163,11 +97,11 @@ export default {
       searchContent,
       dataSource,
       onSelect,
-      handleSearch,
+      completion,
 
       subSubjects,
       subSubjectsOption,
-      subSubjectsValue,
+      tagValue,
     };
   },
 };

@@ -1,8 +1,8 @@
 <template>
-  <a-back-top/>
+  <a-back-top />
   <a-row class="header">
     <a-col :span="2" style="padding-top: 5px; padding-bottom: 5px; text-align: end">
-      <img :src="require('@/assets/logo.png')" style="height: 54px"/>
+      <img :src="require('@/assets/logo.png')" style="height: 54px" />
     </a-col>
     <a-col :span="2" style="text-align: center; line-height: 64px; padding-top: 10px;">
       <a-typography-title :level="3">睿问</a-typography-title>
@@ -23,8 +23,8 @@
     </a-col>
     <a-col :span="3">
       <div v-if="!logined">
-        <a-button type="primery" @click="showLogin">登录</a-button>
-        <a-button type="primery" @click="showRegister">注册</a-button>
+        <a-button type="default" @click="showLogin">登录</a-button>
+        <a-button type="default" @click="showRegister">注册</a-button>
       </div>
       <div v-else>
         <user-dropdown @logout="logout()"></user-dropdown>
@@ -33,7 +33,7 @@
   </a-row>
 
   <div class="content">
-    <router-view @navChanged="navChanged"/>
+    <router-view @navChanged="navChanged" />
   </div>
 
   <div class="footer">
@@ -49,11 +49,11 @@
     </template>
     <a-form :model="loginState" :label-col="{ span: 6 }" :wrapper-col="{ span: 14 }" autocomplete="off">
       <a-form-item label="用户名" name="username" :rules="[{ required: true, message: '请输入用户名！' }]">
-        <a-input v-model:value="loginState.username"/>
+        <a-input v-model:value="loginState.username" />
       </a-form-item>
 
       <a-form-item label="密码" name="password" :rules="[{ required: true, message: '请输入密码！' }]">
-        <a-input-password v-model:value="loginState.password"/>
+        <a-input-password v-model:value="loginState.password" />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -63,12 +63,12 @@
       <a-button type="default" @click="closeRegister">关闭</a-button>
       <a-button type="primary" @click="register()">注册</a-button>
     </template>
-    <a-form :model="registerState" :label-col="{span:6}" :wrapper-col="{span:14}" autocomplete="off">
-      <a-form-item label="用户名" name="username" :rules="[{required:true, message:'请输入用户名！'}]">
-        <a-input v-model:value="registerState.name"/>
+    <a-form :model="registerState" :label-col="{ span: 6 }" :wrapper-col="{ span: 14 }" autocomplete="off">
+      <a-form-item label="用户名" name="username" :rules="[{ required: true, message: '请输入用户名！' }]">
+        <a-input v-model:value="registerState.name" />
       </a-form-item>
-      <a-form-item label="密码" name="password" :rules="[{ required: true, message: '请输入密码！'}]">
-        <a-input-password v-model:value="registerState.password"/>
+      <a-form-item label="密码" name="password" :rules="[{ required: true, message: '请输入密码！' }]">
+        <a-input-password v-model:value="registerState.password" />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -76,8 +76,8 @@
 </template>
 
 <script>
-import {ref, reactive} from 'vue';
-import {message} from 'ant-design-vue';
+import { ref, reactive } from 'vue';
+import { message } from 'ant-design-vue';
 import UserDropdown from '@/components/UserDropdown.vue';
 
 export default {
@@ -136,13 +136,13 @@ export default {
         name: this.registerState.name,
         password: this.registerState.password,
       }).then(
-          (response) => {
-            let res = response.data;
-            if (res.code == 200) {
-              this.registerModalVisible = false;
-              this.loginModalVisible = true;
-            }
+        (response) => {
+          let res = response.data;
+          if (res.code == 200) {
+            this.registerModalVisible = false;
+            this.loginModalVisible = true;
           }
+        }
       )
     },
     logout() {
