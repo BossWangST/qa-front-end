@@ -26,8 +26,8 @@ export default {
   name: "MyQuestion",
   methods: {
     jumpTo(question_id) {
-      //this.$router.push('/QuestionDetail/' + question_id);
-      this.$router.push({path:'/QuestionDetail',query:{id:question_id}});
+      this.$router.push('/QuestionDetail/' + question_id);
+      //this.$router.push({path:'/QuestionDetail',query:{id:question_id}});
     }
   },
   setup() {
@@ -35,7 +35,7 @@ export default {
     const $http = appContext.config.globalProperties.$http;
     const listData = ref([]);
 
-    const user_id = this.$route.params;
+    const user_id = sessionStorage.getItem("user_id");
     const getContent = (user_id) => $http.get("/question/" + user_id).then(
       response => {
         let res = response.data;
