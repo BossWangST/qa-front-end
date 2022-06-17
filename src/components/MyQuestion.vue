@@ -44,7 +44,6 @@ export default {
             t.time = dayjs(t.time).format("YYYY-MM-DD HH:mm:ss");
           });
           listData.value = r.questions;
-          console.log(listData.value);
         }
       }
     );
