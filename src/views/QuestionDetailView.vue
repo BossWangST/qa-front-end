@@ -34,7 +34,7 @@
     <template #renderItem="{ item }">
       <a-card :title="item.time" style="width: 100%" key="1">
         <a-tag color="orange">是否标准答案:{{ item.std }}</a-tag>
-        <a-tag color="orange">回答人:{{ item.userId }}</a-tag>
+        <a-tag color="blue">回答人:{{ item.userId }}</a-tag>
         <p>{{ item.mainContent }}</p>
         <a-image :src="item.img"></a-image>
       </a-card>
@@ -42,9 +42,27 @@
 
 
   </a-list>
+
+
+    <br />
+  <a-card :bordered="true" :model="answerState">
+    <br />我要回答
+    <a-textarea v-model:value="answerState.text" show-count :maxlength="300" rows="5"/>
+  <a-upload-dragger  :multiple="false" :max-count="1" list-type="picture" v-model:fileList="answerState.img"
+                    accept=".jpg,.jpeg,.png,.gif,.webp" :before-upload="beforeUpload">
+    <p class="ant-upload-drag-icon">
+      <inbox-outlined></inbox-outlined>
+    </p>
+    <p class="ant-upload-text">单击或拖拽上传图片</p>
+    <p class="ant-upload-hint">
+      提供一张清晰的题目图片能让你的回答更容易得到采纳
+    </p>
+  </a-upload-dragger>
+  <a-button type="primary" @click="answer()">我要提问</a-button>
+  </a-card>
 </template>
 <script>
-import {getCurrentInstance, ref, defineComponent} from "vue";
+import {getCurrentInstance, ref, defineComponent,reactive} from "vue";
 import dayjs from "dayjs";
 
 
@@ -55,19 +73,54 @@ export default defineComponent({
       //this.$router.push('/QuestionDetail/' + question_id);
       //this.$router.push({path:'/QuestionDetail',query:{id:question_id}});
       this.$router.back(-1);
+    },
+    answer(){
+      //let userID = sessionStorage.getItem('user_id');
+      //let questionID=this.$route.params.id;
+      console.log(this.answerState);
+
+
+      let formData=new FormData();
+      formData.set('user_id',this.user_id);
+      formData.set('mainContent',this.answerState.text);
+      formData.append("img",this.answerState.img[0].originFileObj);
+
+      this.$http.put("/question/newAnswer/"+this.question_id,formData).then(
+          (response) => {
+            let res=response.data;
+            if(res.code==200){
+              alert("回答成功！");
+            }
+          }
+      )
+
     }
   },
   setup() {
+    const answer_value = ref('test value');
+
     const {appContext} = getCurrentInstance();
     const $http = appContext.config.globalProperties.$http;
     const $route = appContext.config.globalProperties.$route;
+
+
     const listData = ref([]);
     const listAnswer = ref([]);
 
+
+    const answerState=reactive({
+      text:"",
+      img:[]
+
+    })
     //const question_id = sessionStorage.getItem('question_id');
     const question_id = $route.params.id;
+    const user_id=sessionStorage.getItem("user_id");
 
     console.log(question_id);
+    const beforeUpload = () => {
+      return false;
+    }
     const getContent = (question_id) => $http.get("/question/id/" + question_id).then(
         response => {
           let res = response.data;
@@ -101,7 +154,12 @@ export default defineComponent({
       listData,
       getAnswers,
       getContent,
+      answer_value,
+      beforeUpload,
+      answerState,
 
+      question_id,
+      user_id,
     }
   },
 
