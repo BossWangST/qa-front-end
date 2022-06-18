@@ -88,7 +88,7 @@ export default defineComponent({
             let r1 = res1.result;
             console.log(r1);
             r1.forEach(t => {
-              t.time = dayjs(t.time).utc().format("YYYY-MM-DD HH:mm:ss");
+              t.time = dayjs(t.time).format("YYYY-MM-DD HH:mm:ss");
             });
             listAnswer.value = r1;
           }
