@@ -75,7 +75,8 @@ export default defineComponent({
     },
     methods: {
         jumpTo(question_id) {
-            this.$router.push('/QuestionDetail/' + question_id);
+            //this.$router.push('/QuestionDetail/' + question_id);
+            this.$router.push(`/QuestionDetail/${question_id}`);
             //this.$router.push({path:'/QuestionDetail',query:{id:question_id}});
         },
 
