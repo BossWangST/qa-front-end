@@ -18,19 +18,17 @@
               <a-col :span="16">{{ item.main_content }}</a-col>
             </a-row>
           </a-card>
-          <br />
-          <br />
         </a-card>
-        <br />
       </template>
     </a-list>
+    <a-divider />
     <a-list item-layout="vertical" size="large" :pagination="false" :data-source="listAnswer">
       <template #renderItem="{ item }">
-        <a-card :title="item.time" style="width: 100%" key="1">
+        <a-card :title="item.time" style="width: 100%; margin-bottom: 20px;">
           <a-tag color="orange" v-if="item.std">标准答案</a-tag>
-          <a-tag color="blue">回答人:{{ item.userId }}</a-tag>
-          <p>{{ item.mainContent }}</p>
-          <a-image :src="item.img"></a-image>
+          <a-tag color="blue">回答人:{{ item.username }}</a-tag>
+          <p>{{ item.main_content }}</p>
+          <a-image style="max-height: 20vh; width: auto;" :src="item.img"></a-image>
         </a-card>
       </template>
 
@@ -41,7 +39,7 @@
     <br />
     <a-card :bordered="true" :model="answerState">
       <br />我要回答
-      <a-textarea v-model:value="answerState.text" show-count :maxlength="300" rows="5" />
+      <a-textarea v-model:value="answerState.text" show-count :maxlength="300" :rows="5" />
       <a-upload-dragger :multiple="false" :max-count="1" list-type="picture" v-model:fileList="answerState.img"
         accept=".jpg,.jpeg,.png,.gif,.webp" :before-upload="beforeUpload">
         <p class="ant-upload-drag-icon">
@@ -52,7 +50,7 @@
           提供一张清晰的题目图片能让你的回答更容易得到采纳
         </p>
       </a-upload-dragger>
-      <a-button type="primary" @click="answer()">我要提问</a-button>
+      <a-button type="primary" @click="answer()">我要回答</a-button>
     </a-card>
   </div>
 
@@ -60,9 +58,15 @@
 
 <script>
 import { getCurrentInstance, ref, defineComponent, reactive } from "vue";
+import { InboxOutlined } from "@ant-design/icons-vue";
+import { message } from "ant-design-vue";
 import dayjs from "dayjs";
+
 export default defineComponent({
   name: "QuestionDetailView",
+  components: {
+    InboxOutlined,
+  },
   methods: {
     getBack() {
       this.$router.back(-1);
@@ -71,13 +75,18 @@ export default defineComponent({
       let formData = new FormData();
       formData.set('user_id', this.user_id);
       formData.set('mainContent', this.answerState.text);
-      formData.append("img", this.answerState.img[0].originFileObj);
+
+      formData.append("img", this.answerState.img && this.answerState.img.length > 0 ?
+        this.answerState.img[0].originFileObj : "");
 
       this.$http.put("/question/newAnswer/" + this.question_id, formData).then(
         (response) => {
           let res = response.data;
           if (res.code == 200) {
-            alert("回答成功！");
+            message.success("回答成功！");
+            setTimeout(() => {
+              this.$router.go(0);
+            }, 500);
           }
         }
       )
@@ -123,7 +132,7 @@ export default defineComponent({
         if (res1.code == 200) {
           let r1 = res1.result;
           r1.forEach(t => {
-            t.time = dayjs(t.time).format("YYYY-MM-DD HH:mm:ss");
+            t.time = dayjs(t.time).utc().format("YYYY-MM-DD HH:mm:ss");
           });
           listAnswer.value = r1;
         }
