@@ -1,14 +1,14 @@
 <template>
-    <a-list item-layout="vertical" size="large" :pagination="false" :data-source="listData">
+    <a-list item-layout="vertical" size="large" :pagination="false" :data-source="questionList">
         <template #renderItem="{ item }">
             <a-card style="margin-top: 20px">
                 <template #actions>
                     <div @click="like(item.question_id)">
-                        <like-outlined></like-outlined>
+                        <like-outlined />
                         {{ item.like_count }}
                     </div>
                     <div @click="answer(item.question_id)">
-                        <message-outlined></message-outlined>
+                        <message-outlined />
                         {{ item.ans_count }}
                     </div>
                 </template>
@@ -17,6 +17,21 @@
                         <a-typography-title :level="4">
                             <a @click="jumpTo(item.question_id)">{{ item.title }}</a>
                         </a-typography-title>
+                        <span v-if="item.credit !== 0">
+                            <a-tag color="orange">
+                                <template #icon>
+                                    <dollar-circle-outlined />
+                                </template>
+                                悬赏分：{{ item.credit }}
+                            </a-tag>
+                        </span>
+                        <span v-if="item.tags && item.tags.length > 0">
+                            <span v-for="(tag, index) in item.tags" :key="index">
+                                <a-tag color="green">
+                                    {{ tag.subject_name }} : {{ tag.tag_name }}
+                                </a-tag>
+                            </span>
+                        </span>
                     </template>
                     <template #description>
                         <div style="padding-left: 3%; padding-right: 3%;">
@@ -44,37 +59,26 @@
             </a-card>
         </template>
     </a-list>
-    <a-row justify="center">
-        <a-col :span="16" style="text-align: center">
-            <a-pagination v-model:current="currentPage" :total="total" :pageSize="20" show-less-items
-                @change="pageChange" />
-        </a-col>
-    </a-row>
 </template>
 <script>
-import { defineComponent, ref, getCurrentInstance, watch } from 'vue';
-import { LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';
-import dayjs from "dayjs";
+import { defineComponent } from 'vue';
+import { LikeOutlined, MessageOutlined, DollarCircleOutlined } from '@ant-design/icons-vue';
+
 
 export default defineComponent({
     components: {
         LikeOutlined,
         MessageOutlined,
+        DollarCircleOutlined,
     },
     data() {
-        return {
-            current_img: true,
-        }
     },
     methods: {
         jumpTo(question_id) {
             this.$router.push('/QuestionDetail/' + question_id);
             //this.$router.push({path:'/QuestionDetail',query:{id:question_id}});
         },
-        pageChange(page) {
-            this.current_img = !this.current_img;
-            this.getContent(page.value, this.subject);
-        },
+
         like(question_id) {
             console.log("liked" + question_id);
         },
@@ -82,45 +86,7 @@ export default defineComponent({
             console.log("answer" + question_id);
         }
     },
-    props: ['subject'],
-    setup(props) {
-        const { appContext } = getCurrentInstance();
-        const $http = appContext.config.globalProperties.$http;
-
-        const currentPage = ref(1);
-        const total = ref(0);
-        const listData = ref([]);
-
-        const getContent = (page, subject) => $http.get("/question",
-            { params: { page: page, subject_name: subject } })
-            .then(response => {
-                let res = response.data;
-
-                if (res.code == 200) {
-                    let r = res.result;
-                    total.value = r.total_count;
-                    r.questions.forEach(t => {
-                        t.time = dayjs(t.time).format("YYYY-MM-DD HH:mm:ss");
-                    });
-                    listData.value = r.questions;
-                }
-            });
-
-        getContent(1, props.subject);
-
-        watch(
-            () => props.subject,
-            (newVal) => {
-                getContent(currentPage.value, newVal);
-            }
-        )
-
-        return {
-            listData,
-            currentPage,
-            total,
-            getContent,
-        };
-    },
+    props: ['questionList'],
+    emits: ['pageChange'],
 });
 </script>

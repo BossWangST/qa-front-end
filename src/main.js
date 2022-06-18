@@ -17,7 +17,13 @@ const app = createApp(App);
 
 axios.defaults.baseURL = 'http://localhost:8088/api';
 let loadingInstance = null
+const excludeURL = [
+    "/question/c",
+];
 axios.interceptors.request.use(config => {
+    if (excludeURL.includes(config.url))
+        return config;
+
     // show loading in full screen mode
     if (!loadingInstance) {
         loadingInstance = ElLoading.service({
@@ -50,6 +56,10 @@ axios.interceptors.response.use(response => {
     if (loadingInstance) {
         loadingInstance.close()
         loadingInstance = null
+    }
+
+    if (response.data.code !== 200) {
+        message.error(response.data.code + ":" + response.data.message);
     }
     return response
 })
