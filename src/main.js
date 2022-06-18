@@ -15,7 +15,7 @@ import axios from 'axios';
 
 const app = createApp(App);
 
-axios.defaults.baseURL = 'http://localhost:8088/api';
+axios.defaults.baseURL = 'http://43.142.72.129:8088/api';
 let loadingInstance = null
 const excludeURL = [
     "/question/c",
