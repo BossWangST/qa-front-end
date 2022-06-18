@@ -10,11 +10,12 @@
           <br />
           <br />
           <a-card :bordered="true">
-            <a-row>
-              <a-col :span="7">
-                <a-image :src="item.img" :key="item.id" style="width: auto; max-height: 500px"></a-image>
+            <a-row :gutter="[20, 20]">
+              <a-col :span="8">
+                <a-image :src="item.img" :key="item.id" style="width: auto; max-width: 20vw; max-height: 50vh">
+                </a-image>
               </a-col>
-              <a-col :span="17">{{ item.main_content }}</a-col>
+              <a-col :span="16">{{ item.main_content }}</a-col>
             </a-row>
           </a-card>
           <br />
