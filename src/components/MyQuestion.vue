@@ -26,7 +26,9 @@ export default {
   name: "MyQuestion",
   methods: {
     jumpTo(question_id) {
-      this.$router.push('/QuestionDetail/' + question_id);
+      //this.$router.push('/QuestionDetail/' + question_id);
+      //this.$router.push({path:'/QuestionDetail',query:{id:question_id}});
+      this.$router.push(`/QuestionDetail/${question_id}`);
     }
   },
   setup() {
@@ -36,7 +38,7 @@ export default {
     const utc = require("dayjs/plugin/utc");
     dayjs.extend(utc);
 
-    const user_id = sessionStorage.getItem('user_id');
+    const user_id = sessionStorage.getItem("user_id");
     const getContent = (user_id) => $http.get("/question/" + user_id).then(
       response => {
         let res = response.data;
